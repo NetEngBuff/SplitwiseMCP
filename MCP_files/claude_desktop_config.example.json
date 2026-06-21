@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "splitwise": {
+      "type": "stdio",
+      "command": "/absolute/path/to/SplitwiseMCP/venv/bin/python",
+      "args": [
+        "/absolute/path/to/SplitwiseMCP/MCP_files/server.py"
+      ],
+      "env": {}
+    }
+  }
+}

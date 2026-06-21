@@ -1,0 +1,4 @@
+mcp>=1.26.0
+splitwise>=3.0.0
+python-dotenv>=1.2.0
+requests>=2.32.0
