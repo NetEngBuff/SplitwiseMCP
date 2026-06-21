@@ -4,7 +4,7 @@ Installation guide for the Splitwise MCP server. The MCP server implementation a
 
 ## What This Installs
 
-This repo provides a local Model Context Protocol server for Splitwise. After setup, MCP clients such as Codex, Claude Code, and Claude Desktop can use Splitwise tools for expenses, friends, groups, comments, currencies, categories, notifications, and raw documented API calls.
+This repo provides a local Model Context Protocol server for Splitwise. After setup, MCP clients such as Codex, Claude Code, Claude Desktop, and ChatGPT Desktop can use Splitwise tools for expenses, friends, groups, comments, currencies, categories, notifications, and raw documented API calls.
 
 ## Fetch Splitwise Keys
 
@@ -66,37 +66,9 @@ Restart Claude Code or start a new session.
 
 ## Claude Desktop Setup
 
-Copy and paste from the repo root on macOS:
+Open Claude Desktop's MCP/server configuration and add this server manually.
 
-```bash
-python3 - <<'PY'
-import json
-from pathlib import Path
-
-root = Path.cwd().resolve()
-config_path = Path.home() / "Library/Application Support/Claude/claude_desktop_config.json"
-config_path.parent.mkdir(parents=True, exist_ok=True)
-
-if config_path.exists():
-    data = json.loads(config_path.read_text())
-else:
-    data = {}
-
-data.setdefault("mcpServers", {})["splitwise"] = {
-    "type": "stdio",
-    "command": str(root / "venv/bin/python"),
-    "args": [str(root / "MCP_files/server.py")],
-    "env": {},
-}
-
-config_path.write_text(json.dumps(data, indent=2) + "\n")
-print(f"Updated {config_path}")
-PY
-```
-
-Restart Claude Desktop after updating the config.
-
-Manual Claude Desktop JSON:
+Use this JSON, replacing `/absolute/path/to/SplitwiseMCP` with your local repo path:
 
 ```json
 {
@@ -110,6 +82,24 @@ Manual Claude Desktop JSON:
   }
 }
 ```
+
+Restart Claude Desktop after updating the config.
+
+## ChatGPT Desktop Setup
+
+If your ChatGPT Desktop build exposes local MCP/custom connector settings, add a new local stdio MCP server manually.
+
+Use these values, replacing `/absolute/path/to/SplitwiseMCP` with your local repo path:
+
+```text
+Name: splitwise
+Transport: stdio
+Command: /absolute/path/to/SplitwiseMCP/venv/bin/python
+Arguments: /absolute/path/to/SplitwiseMCP/MCP_files/server.py
+Environment: leave empty
+```
+
+The server reads credentials from the repo root `.env`, so you do not need to paste Splitwise keys into ChatGPT. Restart ChatGPT Desktop after adding the server. If your ChatGPT Desktop app does not show MCP/custom connector settings, your current app/account build may not support local MCP servers yet.
 
 ## Verify
 
