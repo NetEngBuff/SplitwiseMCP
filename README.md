@@ -4,7 +4,7 @@ Installation guide for the Splitwise MCP server. The MCP server implementation a
 
 ## What This Installs
 
-This repo provides a local Model Context Protocol server for Splitwise. After setup, MCP clients such as Codex, Claude Code, Claude Desktop, and ChatGPT Desktop can use Splitwise tools for expenses, friends, groups, comments, currencies, categories, notifications, and raw documented API calls.
+This repo provides a local Model Context Protocol server for Splitwise. After setup, MCP clients such as Codex, Claude Code, and Claude Desktop can use Splitwise tools for expenses, friends, groups, comments, currencies, categories, notifications, and raw documented API calls.
 
 ## Fetch Splitwise Keys
 
@@ -84,49 +84,6 @@ Use this JSON, replacing `/absolute/path/to/SplitwiseMCP` with your local repo p
 ```
 
 Restart Claude Desktop after updating the config.
-
-## ChatGPT Desktop Setup
-
-If your ChatGPT Desktop build exposes local MCP/custom connector settings, add a new local stdio MCP server manually.
-
-Use these values, replacing `/absolute/path/to/SplitwiseMCP` with your local repo path:
-
-```text
-Name: splitwise
-Transport: stdio
-Command: /absolute/path/to/SplitwiseMCP/venv/bin/python
-Arguments: /absolute/path/to/SplitwiseMCP/MCP_files/server.py
-Environment: leave empty
-```
-
-The server reads credentials from the repo root `.env`, so you do not need to paste Splitwise keys into ChatGPT. Restart ChatGPT Desktop after adding the server. If your ChatGPT Desktop app does not show MCP/custom connector settings, your current app/account build may not support local MCP servers yet.
-
-## Verify
-
-From the repo root:
-
-```bash
-venv/bin/python - <<'PY'
-import asyncio
-from mcp import ClientSession, StdioServerParameters
-from mcp.client.stdio import stdio_client
-
-async def main():
-    params = StdioServerParameters(
-        command="venv/bin/python",
-        args=["MCP_files/server.py"],
-    )
-    async with stdio_client(params) as (read, write):
-        async with ClientSession(read, write) as session:
-            await session.initialize()
-            tools = await session.list_tools()
-            print(f"{len(tools.tools)} tools registered")
-
-asyncio.run(main())
-PY
-```
-
-Expected result: `37 tools registered`.
 
 ## Project Layout
 
